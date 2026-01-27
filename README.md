@@ -24,7 +24,7 @@ For demo purposed frontend:
 - **Frontend A – Merchant Simulator UI**: web app that sends auth requests to `auth-gateway` and shows real-time results.
 - **Frontend B – Ops/Analytics Dashboard**: web app that visualizes how the system is behaving (throughput, latency, approval rates, rate-limiting, risk decisions, errors).
 
-Demo: [Watch demo video](https://youtu.be/7A6a_pECYzY)
+Demo: [Watch demo video](https://youtu.be/7vrKmpgaNks)
 
 ---
 
