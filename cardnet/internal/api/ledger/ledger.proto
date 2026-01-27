@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package ledger.v1;
+
+option go_package = "cardnet/internal/api/ledger;ledgerpb";
+
+message AuthEvent {
+  string event_id     = 1;
+  string auth_id      = 2;
+  string merchant_id  = 3;
+  string card_hash    = 4;
+
+  EventType event_type = 5;
+  Decision decision    = 6;
+
+  bytes payload       = 7;
+  int64 created_at    = 8;
+}
+
+enum EventType {
+  EVENT_TYPE_UNSPECIFIED = 0;
+  AUTH_REQUEST           = 1;
+  RISK_DECISION          = 2;
+  ISSUER_RESPONSE        = 3;
+  FINAL_OUTCOME          = 4;
+}
+
+enum Decision {
+  DECISION_UNSPECIFIED = 0;
+  APPROVED             = 1;
+  DECLINED             = 2;
+  REVIEW               = 3;
+}
+
+service EventLedgerService {
+  rpc RecordEvent(AuthEvent) returns (RecordEventResponse);
+}
+
+message RecordEventResponse {
+  bool accepted = 1;
+}

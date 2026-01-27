@@ -1,0 +1,57 @@
+############################
+# OS / Editor cruft
+############################
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+*.iml
+
+############################
+# Node / Next.js frontends
+############################
+node_modules/
+.next/
+dist/
+out/
+coverage/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+############################
+# Go builds
+############################
+bin/
+build/
+*.exe
+*.exe~
+*.test
+*.out
+
+############################
+# Environment / secrets
+############################
+.env
+.env.local
+.env.*.local
+
+############################
+# Misc
+############################
+*.tmp
+*.bak
+*.orig
+*.tsbuildinfo
+
+############################
+# Cardnet ML artifacts
+############################
+cardnet/tools/ml/datasets/
+cardnet/tools/ml/notebooks/
+cardnet/tools/ml/**/*.csv
+cardnet/tools/ml/**/*.ipynb

@@ -1,0 +1,10 @@
+{
+  "event_id": "22222222-2222-2222-2222-222222222222",
+  "auth_id": "auth_test_001",
+  "merchant_id": "merchant_abc",
+  "card_hash": "hash_xyz",
+  "event_type": "FINAL_OUTCOME",
+  "decision": "APPROVED",
+  "payload": "eyJzdGF0dXMiOiJPSyJ9",
+  "created_at": 1704900060
+}

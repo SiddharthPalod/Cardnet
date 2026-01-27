@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package issuer;
+option go_package = "cardnet/internal/api/issuer;issuerpb";
+
+service IssuerService {
+  rpc Authorize (IssuerAuthRequest) returns (IssuerAuthResponse);
+}
+
+message IssuerAuthRequest {
+  string auth_id = 1;
+  string card_number = 2;
+  int64 amount = 3;
+  string currency = 4;
+}
+
+message IssuerAuthResponse {
+  bool approved = 1;
+  string decline_code = 2;
+}

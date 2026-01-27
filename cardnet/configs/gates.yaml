@@ -1,0 +1,6 @@
+# Behavior Gates Configuration
+# These gates protect the system from bad states automatically
+
+ml_enabled: true
+issuer_required: true
+analytics_enabled: true

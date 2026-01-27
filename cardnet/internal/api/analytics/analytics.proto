@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+package analytics;
+
+option go_package = "cardnet/internal/api/analytics";
+
+service AnalyticsService {
+  rpc GetMerchantStats(GetMerchantStatsRequest) returns (GetMerchantStatsResponse);
+  rpc GetBinStats(GetBinStatsRequest) returns (GetBinStatsResponse);
+  rpc GetRuleEffectiveness(GetRuleEffectivenessRequest) returns (GetRuleEffectivenessResponse);
+  rpc GetNetworkStats(GetNetworkStatsRequest) returns (GetNetworkStatsResponse);
+  // Network-wide authorization history across merchants
+  rpc GetNetworkHistory(GetNetworkHistoryRequest) returns (GetNetworkHistoryResponse);
+}
+
+message GetMerchantStatsRequest {
+  string merchant_id = 1;
+}
+
+message GetMerchantStatsResponse {
+  string merchant_id = 1;
+  int64 tx_count = 2;
+  int64 approved_tx = 3;
+  double total_amount = 4;
+  double approval_rate = 5;
+}
+
+message GetBinStatsRequest {
+  string bin = 1;
+}
+
+message GetBinStatsResponse {
+  string bin = 1;
+  int64 tx_count = 2;
+  int64 approved_tx = 3;
+  double total_amount = 4;
+  double approval_rate = 5;
+}
+
+message GetRuleEffectivenessRequest {
+  string rule_id = 1;
+}
+
+message GetRuleEffectivenessResponse {
+  string rule_id = 1;
+  int64 triggered_count = 2;
+  int64 decline_count = 3;
+  double decline_rate = 4;
+}
+
+message GetNetworkStatsRequest {
+}
+
+message GetNetworkStatsResponse {
+    int64 total_tx = 1;
+    int64 approved_tx = 2;
+    double approval_rate = 3;
+}
+
+// Network-wide transaction history
+message NetworkHistoryItem {
+  string auth_id = 1;
+  string merchant_id = 2;
+  double amount = 3;
+  string currency = 4;
+  string status = 5;
+  string reason = 6;
+  int64 created_at = 7; // unix seconds
+}
+
+message GetNetworkHistoryRequest {
+  // Optional filters
+  string merchant_id = 1;
+  string status = 2;
+  int32 limit = 3;
+}
+
+message GetNetworkHistoryResponse {
+  repeated NetworkHistoryItem items = 1;
+}

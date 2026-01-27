@@ -1,0 +1,19 @@
+{
+  "transaction": {
+    "request_id": "t-hard",
+    "merchant_id": "m-9",
+    "bin": "400000",
+    "amount": 12000,
+    "currency": "INR",
+    "mcc": "7995"
+  },
+  "context": {
+    "tx_count_1m": 8,
+    "avg_amount": 2000,
+    "p95_amount": 3500,
+    "merchant_risk_score": 85,
+    "bin_risk_score": 90,
+    "last_country": "US",
+    "last_tx_ts": 1700000000
+  }
+}

@@ -1,0 +1,9 @@
+kafka:
+  brokers:
+    - kafka:9092
+  group_id: analytics-group
+
+postgres:
+  dsn: postgres://cardnet:cardnet@postgres:5432/cardnet?sslmode=disable
+
+port: 60057

@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package auth;
+
+option go_package = "cardnet/internal/api/grpc;grpc";
+
+service AuthGateway {
+  rpc Authorize (AuthRequest) returns (AuthResponse);
+}
+
+message AuthRequest {
+  string request_id = 1;
+  string merchant_id = 2;
+  string card_token = 3;
+  int64 amount = 4;
+  string currency = 5;
+  string mcc = 6;
+}
+
+message AuthResponse {
+  string auth_id = 1;
+  string status = 2;
+}

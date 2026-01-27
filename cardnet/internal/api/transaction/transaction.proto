@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package transaction.v1;
+
+option go_package = "cardnet/internal/api/transaction;transactionpb";
+
+// TransactionState represents the canonical state of a transaction
+enum TxState {
+  TX_STATE_UNSPECIFIED = 0;
+  INITIATED            = 1;
+  RISK_EVALUATED       = 2;
+  ISSUER_REQUESTED     = 3;
+  ISSUER_RESPONDED     = 4;
+  FINALIZED            = 5;
+}
+
+// TransactionStateEntry represents a state entry in the ledger
+message TransactionStateEntry {
+  string auth_id   = 1;
+  TxState state    = 2;
+  int64  timestamp = 3;
+}

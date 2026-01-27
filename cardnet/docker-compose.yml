@@ -1,0 +1,215 @@
+version: '3.8'
+
+services:
+  # ==========================================
+  # INFRASTRUCTURE
+  # ==========================================
+  postgres:
+    image: postgres:16
+    container_name: cardnet-postgres
+    environment:
+      POSTGRES_USER: cardnet
+      POSTGRES_PASSWORD: cardnet
+      POSTGRES_DB: cardnet
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cardnet"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  cassandra:
+    image: cassandra:4.1
+    container_name: cardnet-cassandra
+    ports:
+      - "9042:9042"
+    environment:
+      - CASSANDRA_CLUSTER_NAME=cardnet_cluster
+      - CASSANDRA_DC=datacenter1
+    volumes:
+      - cassandra_data:/var/lib/cassandra
+    healthcheck:
+      test: ["CMD-SHELL", "cqlsh -e 'DESCRIBE KEYSPACES'"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+
+  cassandra-init:
+    image: cassandra:4.1
+    container_name: cardnet-cassandra-init
+    depends_on:
+      cassandra:
+        condition: service_healthy
+    volumes:
+      - ./docker/cassandra/init.cql:/init.cql
+    entrypoint: ["/bin/bash", "-c", "cqlsh cassandra -f /init.cql"]
+
+  kafka:
+    image: redpandadata/redpanda:latest
+    container_name: cardnet-kafka
+    command:
+      - redpanda
+      - start
+      - --overprovisioned
+      - --smp
+      - "1"
+      - --memory
+      - "1G"
+      - --node-id
+      - "0"
+      - --kafka-addr
+      - PLAINTEXT://0.0.0.0:9092
+      - --advertise-kafka-addr
+      - PLAINTEXT://kafka:9092
+    ports:
+      - "9092:9092"
+
+  # ==========================================
+  # APPLICATION SERVICES
+  # ==========================================
+  
+  auth-gateway:
+    build:
+      context: .
+      dockerfile: docker/auth-gateway/Dockerfile
+    container_name: cardnet-auth-gateway
+    environment:
+      - DB_DSN=postgres://cardnet:cardnet@postgres:5432/cardnet?sslmode=disable
+      - RATE_LIMITER_ADDR=rate-limiter:60051
+      - RISK_ENGINE_ADDR=risk-engine:60052
+      - CARD_NETWORK_ADDR=card-network:60053
+      - EVENT_LEDGER_ADDR=event-ledger:60055
+      - PORT=50051
+    ports:
+      - "50051:50051"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rate-limiter:
+        condition: service_started
+      risk-engine:
+        condition: service_started
+      card-network:
+        condition: service_started
+      event-ledger:
+        condition: service_started
+
+  rate-limiter:
+    build:
+      context: .
+      dockerfile: docker/rate-limiter/Dockerfile
+    container_name: cardnet-rate-limiter
+    environment:
+      - PORT=60051
+    ports:
+      - "60051:60051"
+
+  risk-engine:
+    build:
+      context: .
+      dockerfile: docker/risk-engine/Dockerfile
+    container_name: cardnet-risk-engine
+    environment:
+      - PORT=60052
+    ports:
+      - "60052:60052"
+
+  card-network:
+    build:
+      context: .
+      dockerfile: docker/card-network/Dockerfile
+    container_name: cardnet-card-network
+    environment:
+      - PORT=60053
+      - ISSUER_SIMULATOR_ADDR=issuer-simulator:60054
+    ports:
+      - "60053:60053"
+    depends_on:
+      issuer-simulator:
+        condition: service_started
+
+  issuer-simulator:
+    build:
+      context: .
+      dockerfile: docker/issuer-simulator/Dockerfile
+    container_name: cardnet-issuer-simulator
+    environment:
+      - PORT=60054
+    ports:
+      - "60054:60054"
+
+  event-ledger:
+    build:
+      context: .
+      dockerfile: docker/event-ledger/Dockerfile
+    container_name: cardnet-event-ledger
+    environment:
+      - CASSANDRA_HOST=cassandra
+      - KAFKA_ADDR=kafka:9092
+      - PORT=60055
+    ports:
+      - "60055:60055"
+    depends_on:
+      cassandra:
+        condition: service_healthy
+      cassandra-init:
+        condition: service_completed_successfully
+      kafka:
+        condition: service_started
+
+  settlement-service:
+    build:
+      context: .
+      dockerfile: docker/settlement-service/Dockerfile
+    container_name: cardnet-settlement-service
+    environment:
+      - PORT=60056
+      - DB_DSN=postgres://cardnet:cardnet@postgres:5432/cardnet?sslmode=disable
+      - KAFKA_ADDR=kafka:9092
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+
+  analytics-service:
+    build:
+      context: .
+      dockerfile: docker/analytics-service/Dockerfile
+    container_name: cardnet-analytics-service
+    environment:
+      - PORT=60057
+      - POSTGRES_DSN=postgres://cardnet:cardnet@postgres:5432/cardnet?sslmode=disable
+      - KAFKA_BROKERS=kafka:9092
+      - KAFKA_GROUP_ID=analytics-group
+    ports:
+      - "60057:60057"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+
+  gateway-api:
+    build:
+      context: .
+      dockerfile: docker/gateway-api/Dockerfile
+    container_name: cardnet-gateway-api
+    environment:
+      - PORT=8080
+      - AUTH_GATEWAY_ADDR=auth-gateway:50051
+      - ANALYTICS_SERVICE_ADDR=analytics-service:60057
+    ports:
+      - "8081:8080"
+    depends_on:
+      auth-gateway:
+        condition: service_started
+      analytics-service:
+        condition: service_started
+
+volumes:
+  postgres_data:
+  cassandra_data:

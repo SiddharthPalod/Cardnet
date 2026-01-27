@@ -1,0 +1,124 @@
+@import "tailwindcss";
+
+/* ================================
+   THEME VARIABLES
+================================ */
+:root {
+  --color-bg: #B5FF37;
+  --color-black: #000000;
+  --color-white: #FFFFFF;
+
+  --color-foreground: #000000;
+  --color-muted: #333333;
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+
+  --font-sans: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-script: 'Pacifico', cursive;
+}
+
+/* ================================
+   DARK MODE
+================================ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #0a0a0a;
+    --color-foreground: #ffffff;
+    --color-muted: #bbbbbb;
+  }
+}
+
+/* ================================
+   BASE RESET
+================================ */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;  
+  min-height: 100%;
+  background: var(--color-bg);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background: var(--color-bg);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ================================
+   TYPOGRAPHY HELPERS
+================================ */
+.font-poppins {
+  font-family: var(--font-sans);
+}
+
+.font-pacifico {
+  font-family: var(--font-script);
+}
+
+.heading-xl {
+  font-size: clamp(3rem, 6vw, 4.5rem);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.heading-lg {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.text-body {
+  font-size: 1.125rem;
+  line-height: 1.7;
+}
+
+/* ================================
+   BUTTON BASE STYLE
+================================ */
+.btn-primary {
+  background: var(--color-black);
+  color: var(--color-white);
+  padding: 14px 28px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.btn-primary:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+.btn-primary:active {
+  transform: scale(0.96);
+}
+
+/* ================================
+   UTILITIES
+================================ */
+.fade-in {
+  animation: fadeIn 0.6s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Smooth image scaling */
+img {
+  display: block;
+  max-width: 100%;
+}

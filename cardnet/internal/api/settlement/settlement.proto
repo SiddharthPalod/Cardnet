@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package settlement;
+
+option go_package = "cardnet/internal/api/settlement;settlementpb";
+
+// ==========================
+// Settlement Admin Service
+// ==========================
+// This service is used by ops / internal tools,
+// NOT by cardholders or merchants.
+service SettlementService {
+
+  // Trigger reconciliation for a given batch
+  rpc ReconcileBatch(ReconcileBatchRequest)
+      returns (ReconcileBatchResponse);
+
+  // Get high-level batch status
+  rpc GetBatchStatus(GetBatchStatusRequest)
+      returns (GetBatchStatusResponse);
+}
+
+// ==========================
+// Requests / Responses
+// ==========================
+
+message ReconcileBatchRequest {
+  string batch_id = 1;
+}
+
+message ReconcileBatchResponse {
+  bool success = 1;
+  string error_message = 2;
+}
+
+message GetBatchStatusRequest {
+  string batch_id = 1;
+}
+
+message GetBatchStatusResponse {
+  string batch_id = 1;
+  string batch_date = 2;              // YYYY-MM-DD
+  string batch_status = 3;            // OPEN / READY
+  string reconciliation_status = 4;   // RECONCILED / FAILED
+}

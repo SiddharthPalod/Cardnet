@@ -1,0 +1,65 @@
+issuers:
+  - name: HDFC
+    bins:
+      - "411111"
+      - "411112"
+    latency_ms: 120
+    decline_rate: 0.10
+    timeout_rate: 0.02
+
+    chaos:
+      force_timeout: false
+      force_decline: false
+      extra_latency_ms: 0
+
+  - name: ICICI
+    bins:
+      - "510510"
+      - "510511"
+    latency_ms: 180
+    decline_rate: 0.05
+    timeout_rate: 0.01
+
+    chaos:
+      force_timeout: false
+      force_decline: false
+      extra_latency_ms: 0
+
+  - name: AXIS
+    bins:
+      - "400000"
+    latency_ms: 250
+    decline_rate: 0.15
+    timeout_rate: 0.04
+
+    chaos:
+      force_timeout: false
+      force_decline: false
+      extra_latency_ms: 0
+
+  - name: SBI
+    bins:
+      - "607000"
+    latency_ms: 300
+    decline_rate: 0.20
+    timeout_rate: 0.06
+
+    chaos:
+      force_timeout: false
+      force_decline: false
+      extra_latency_ms: 0
+
+  - name: DEFAULT
+    bins:
+      - "123456"
+      - "123457"
+      - "123458"
+      - "555555"
+    latency_ms: 150
+    decline_rate: 0.10
+    timeout_rate: 0.03
+
+    chaos:
+      force_timeout: false
+      force_decline: false
+      extra_latency_ms: 0

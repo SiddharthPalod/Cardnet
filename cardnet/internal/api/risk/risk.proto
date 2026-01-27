@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package risk;
+
+// 👇 IMPORTANT: adjust module path if needed
+option go_package = "cardnet/internal/api/risk;riskpb";
+
+// ==========================
+// Risk Engine Service
+// ==========================
+service RiskEngine {
+  rpc Evaluate (RiskRequest) returns (RiskResponse);
+}
+
+// ==========================
+// Requests
+// ==========================
+message RiskRequest {
+  Transaction transaction = 1;
+  RiskContext context     = 2;
+}
+
+// Core transaction info (from auth)
+message Transaction {
+  string request_id  = 1;
+  string merchant_id = 2;
+  string bin         = 3;
+  int64  amount      = 4;
+  string currency    = 5;
+  string mcc         = 6;
+}
+
+// Optional context (extensible, Phase 4+)
+message RiskContext {
+  // Velocity
+  int32 tx_count_1m = 1;
+  int32 tx_count_5m = 2;
+
+  // Geo
+  string last_country = 3;
+  int64  last_tx_ts   = 4;
+
+  // Amount profile
+  int64 avg_amount = 5;
+  int64 p95_amount = 6;
+
+  // External scores
+  int32 merchant_risk_score = 7;
+  int32 bin_risk_score      = 8;
+}
+
+// ==========================
+// Responses
+// ==========================
+message RiskResponse {
+  Decision decision   = 1;
+  int32    risk_score = 2;
+  repeated string reasons = 3;
+}
+
+// ==========================
+// Enums
+// ==========================
+enum Decision {
+  DECISION_UNSPECIFIED = 0;
+  APPROVE              = 1;
+  SOFT_DECLINE         = 2;
+  HARD_DECLINE         = 3;
+}

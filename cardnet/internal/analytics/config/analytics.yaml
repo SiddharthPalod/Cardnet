@@ -1,0 +1,7 @@
+kafka:
+  brokers:
+    - localhost:9092
+  group_id: analytics-service
+
+postgres:
+  dsn: postgres://cardnet:cardnet@localhost:5432/analytics?sslmode=disable

@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package rate;
+
+option go_package = "cardnet/internal/api/grpc;grpc";
+
+service RateLimiter{
+  rpc CheckLimit (RateLimitRequest) returns (RateLimitResponse);
+}
+
+message RateLimitRequest{
+  string merchant_id = 1;
+  string bin = 2;
+  string mcc = 3;
+}
+
+message RateLimitResponse{
+  bool allowed = 1;
+  string reason = 2;
+}

@@ -1,0 +1,4 @@
+env: local
+grpc_port: 50051
+database:
+  dsn: postgres://cardnet:cardnet@localhost:5432/cardnet
