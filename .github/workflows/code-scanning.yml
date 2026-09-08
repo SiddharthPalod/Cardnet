@@ -35,7 +35,7 @@ jobs:
           no-fail: true
       - name: Upload Hadolint scan results
         if: always() && hashFiles('hadolint.sarif') != ''
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: hadolint.sarif
   njsscan:
@@ -51,7 +51,7 @@ jobs:
           args: . --sarif --output njsscan.sarif
       - name: Upload njsscan scan results
         if: always() && hashFiles('njsscan.sarif') != ''
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: njsscan.sarif
   dependency-review:
@@ -81,6 +81,6 @@ jobs:
         continue-on-error: true
       - name: Upload OSV-Scanner results
         if: always() && hashFiles('osv-results.sarif') != ''
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: osv-results.sarif
